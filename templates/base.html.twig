@@ -9,11 +9,30 @@
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
+
+    </head>
+    <body>
+        <header class="container-md">
+            <div class="row" id="titleBar"></div>
+            <nav class="navbar-brand"></nav>
+
+        </header>
+        <main class="container-md">
+            <div class="row">
+                <div id="body" class="col-12 col-md-9 border">
+                    {% block body %}Main{% endblock %}
+                </div>
+                <aside id="left_aside" class="col border">
+                    {% block aside %}Aside{% endblock %}
+                </aside>
+            </div>
+        </main>
+
+        <footer class="container-md">
+            Footer
+        </footer>
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
     </body>
 </html>
