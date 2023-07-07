@@ -30,10 +30,14 @@ class Race
     #[ORM\OneToMany(mappedBy: 'race', targetEntity: Animal::class, orphanRemoval: true)]
     private Collection $animals;
 
+    #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'aboutRaces')]
+    private Collection $articles;
+
     public function __construct()
     {
         $this->family = new ArrayCollection();
         $this->animals = new ArrayCollection();
+        $this->articles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -132,6 +136,33 @@ class Race
             if ($animal->getRace() === $this) {
                 $animal->setRace(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Article>
+     */
+    public function getArticles(): Collection
+    {
+        return $this->articles;
+    }
+
+    public function addArticle(Article $article): static
+    {
+        if (!$this->articles->contains($article)) {
+            $this->articles->add($article);
+            $article->addAboutRace($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticle(Article $article): static
+    {
+        if ($this->articles->removeElement($article)) {
+            $article->removeAboutRace($this);
         }
 
         return $this;

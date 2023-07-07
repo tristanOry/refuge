@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+use App\Interfaces\TimestampedInterface;
 use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
-class Article
+class Article implements TimestampedInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -31,6 +34,18 @@ class Article
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
+
+    #[ORM\ManyToMany(targetEntity: Animal::class, inversedBy: 'articles')]
+    private Collection $aboutAnimals;
+
+    #[ORM\ManyToMany(targetEntity: Race::class, inversedBy: 'articles')]
+    private Collection $aboutRaces;
+
+    public function __construct()
+    {
+        $this->aboutAnimals = new ArrayCollection();
+        $this->aboutRaces = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,6 +120,54 @@ class Article
     public function setUpdatedAt(\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Animal>
+     */
+    public function getAboutAnimals(): Collection
+    {
+        return $this->aboutAnimals;
+    }
+
+    public function addAboutAnimal(Animal $aboutAnimal): static
+    {
+        if (!$this->aboutAnimals->contains($aboutAnimal)) {
+            $this->aboutAnimals->add($aboutAnimal);
+        }
+
+        return $this;
+    }
+
+    public function removeAboutAnimal(Animal $aboutAnimal): static
+    {
+        $this->aboutAnimals->removeElement($aboutAnimal);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Race>
+     */
+    public function getAboutRaces(): Collection
+    {
+        return $this->aboutRaces;
+    }
+
+    public function addAboutRace(Race $aboutRace): static
+    {
+        if (!$this->aboutRaces->contains($aboutRace)) {
+            $this->aboutRaces->add($aboutRace);
+        }
+
+        return $this;
+    }
+
+    public function removeAboutRace(Race $aboutRace): static
+    {
+        $this->aboutRaces->removeElement($aboutRace);
 
         return $this;
     }
