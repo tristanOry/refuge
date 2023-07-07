@@ -25,7 +25,7 @@ class AdminSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function setDefaultValues(BeforeEntityPersistedEvent $event): void
+    public function setDefaultValues(BeforeEntityPersistedEvent|BeforeEntityUpdatedEvent $event): void
     {
         $entity = $event->getEntityInstance();
 
